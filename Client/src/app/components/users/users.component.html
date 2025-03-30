@@ -1,0 +1,72 @@
+<form>
+  <div class="mb-3 row">
+    <label
+      for="table-filtering-search"
+      class="col-xs-3 col-sm-auto col-form-label"
+      >Full text search:</label
+    >
+    <div class="col-xs-3 col-sm-auto">
+      <input
+        id="table-filtering-search"
+        class="form-control"
+        type="text"
+        [formControl]="filter"
+      />
+    </div>
+    <div class="col-xs-3 col-sm-auto">
+      <button type="button" class="btn btn-primary" (click)="resetBalance()">
+        Reset Balance
+      </button>
+    </div>
+  </div>
+</form>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Icon</th>
+      <th scope="col" sortable="name" (sort)="onSort($event)">Name</th>
+      <th scope="col" sortable="age" (sort)="onSort($event)">Age</th>
+      <th scope="col" sortable="registered" (sort)="onSort($event)">
+        Registered Date
+      </th>
+      <th scope="col" sortable="email" (sort)="onSort($event)">Email</th>
+      <th scope="col" sortable="balance" (sort)="onSort($event)">Balance</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (user of filteredUsers$ | async; track user.name; let i = $index) {
+    <tr>
+      <td>
+        <img
+          [src]="user.iconUrl"
+          [alt]="user.iconPath"
+          class="me-2"
+          style="width: 20px"
+        />
+      </td>
+      <td><ngb-highlight [result]="user.name" [term]="filter.value" /></td>
+      <td>
+        <p>{{user.age | number}}</p>
+        <ngb-highlight [result]="" [term]="filter.value" />
+      </td>
+      <td>
+        <p>{{user.registered | date : 'dd-mm-yyyy dd:mm:ss'}}</p>
+        <ngb-highlight
+          [result]=""
+          [term]="filter.value"
+        />
+      </td>
+      <td>
+        <p>{{user.email}}</p>
+      <td>
+        <p>{{user.balance | number:'1.2-2' }}</p>
+      </td>
+    </tr>
+    } @empty {
+    <tr>
+      <td colspan="4" style="text-align: center">No users found</td>
+    </tr>
+    }
+  </tbody>
+</table>
